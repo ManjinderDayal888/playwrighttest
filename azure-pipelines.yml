@@ -6,7 +6,14 @@ pr:
     include: [ main ]
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'SelfHosted'
+  # ----------------------------------------
+  # INSERT DEMAND HERE
+  # The 'pool' key can take either 'name' or 'vmImage', 
+  # but 'demands' is a separate key nested under 'pool'.
+  demands:
+  - Agent.OS -equals Windows_NT
+
 
 variables:
   NODE_VERSION: '22'
