@@ -34,8 +34,8 @@ steps:
 
   # Run but don't hard-fail the job so we can always publish artifacts
   - script: |
-      npx playwright test || echo "Tests failed but continuing to publish artifacts"
-    displayName: 'Run Playwright tests'
+      npm run test:coverage || echo "Tests failed but continuing to publish artifacts"
+    displayName: 'Run Playwright tests with Coverage'
     continueOnError: true
 
   - task: PublishTestResults@2
