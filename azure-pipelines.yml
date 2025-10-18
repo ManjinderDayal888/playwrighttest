@@ -38,6 +38,15 @@ steps:
     displayName: 'Run Playwright tests with Coverage'
     continueOnError: true
 
+  # Add this task after 'Run Playwright tests with Coverage'
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish Code Coverage Results'
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+    # The reportDirectory is optional, but points to the HTML report directory created by nyc
+      reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
+
   - task: PublishTestResults@2
     displayName: 'Publish JUnit results'
     inputs:
