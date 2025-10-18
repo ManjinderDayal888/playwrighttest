@@ -6,7 +6,7 @@ pr:
     include: [ main ]
 
 pool:
-  vmImage: 'SelfHosted'
+  name: 'SelfHosted'
   # ----------------------------------------
   # INSERT DEMAND HERE
   # The 'pool' key can take either 'name' or 'vmImage', 
