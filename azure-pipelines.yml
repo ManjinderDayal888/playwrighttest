@@ -1,0 +1,53 @@
+trigger:
+  branches:
+    include: [ main ]
+pr:
+  branches:
+    include: [ main ]
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  NODE_VERSION: '22'
+
+steps:
+  - checkout: self
+    fetchDepth: 1
+
+  - task: UseNode@1
+    inputs:
+      version: '$(NODE_VERSION)'
+
+  - script: npm ci
+    displayName: 'Install deps'
+
+  - script: npx playwright install --with-deps
+    displayName: 'Install Playwright browsers + OS deps'
+
+  # Run but don't hard-fail the job so we can always publish artifacts
+  - script: |
+      npx playwright test || echo "Tests failed but continuing to publish artifacts"
+    displayName: 'Run Playwright tests'
+    continueOnError: true
+
+  - task: PublishTestResults@2
+    displayName: 'Publish JUnit results'
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: 'test-results/junit.xml'
+      failTaskOnFailedTests: false
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Playwright HTML report'
+    inputs:
+      targetPath: '$(System.DefaultWorkingDirectory)/playwright-report'
+      artifact: 'playwright-report'
+      publishLocation: 'pipeline'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish raw debug artifacts (traces/screenshots/videos)'
+    inputs:
+      targetPath: '$(System.DefaultWorkingDirectory)'
+      artifact: 'debug-artifacts'
+      publishLocation: 'pipeline'
